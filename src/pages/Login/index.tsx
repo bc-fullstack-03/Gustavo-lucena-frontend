@@ -30,6 +30,7 @@ function Login() {
             authFormTitle='Faça login e comece usar!'
             submitFormButtonText='Entrar'
             submitFormButtonAction={handleLogin}
+            isRegister={false}
             routeName='singup'
         />
     )

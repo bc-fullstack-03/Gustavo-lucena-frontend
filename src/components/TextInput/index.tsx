@@ -15,7 +15,7 @@ function TextInputRoot(props: textInputRoot) {
 }
 
 export type textInputIcon = {
-    children: ReactNode
+    children: ReactNode;
 }
 function TextInputIcon(props: textInputIcon) {
 

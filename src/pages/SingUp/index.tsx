@@ -21,6 +21,7 @@ function SingUp() {
             authFormTitle='Faça o cadastro e comece usar!'
             submitFormButtonText='Cadastrar'
             submitFormButtonAction={handleRegister}
+            isRegister={true}
             routeName='/'
         />
     )
