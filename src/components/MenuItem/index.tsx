@@ -12,7 +12,7 @@ function MenuItemRoot(props: MenuItemProps) {
     return (
         <li className='mt-5'>
             <Link to={props.route}>
-                <div className='flex items-center px-4 rounded-full hover:bg-sky-400 ml-2 cursor-pointer transition duration-150'>
+                <div className='flex items-center px-4 rounded-full hover:bg-sky-400 ml-2 cursor-pointer transition duration-1'>
                     {props.children}
                 </div>
             </Link>

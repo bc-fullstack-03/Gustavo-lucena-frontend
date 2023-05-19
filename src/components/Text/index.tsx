@@ -19,7 +19,7 @@ function Text({ size='md', children, asChild, className }: PropsText){
             {
                 'text-xs': size === 'sm',
                 'text-sm': size === 'md',
-                'text-md': size === 'lg',
+                'text-base': size === 'lg',
                 'text-lg': size === 'xl',
             },
             className

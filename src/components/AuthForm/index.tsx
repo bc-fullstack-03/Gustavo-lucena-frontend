@@ -96,7 +96,7 @@ function AuthForm(props: AuthFormProps) {
                     </TextInput.Root>
                 </label>
 
-                <Button type="submit" className="mt-4 text-[#000]">{props.submitFormButtonText}</Button>
+                <Button type="submit" className="mt-4">{props.submitFormButtonText}</Button>
             </form>
 
             <footer className="mt-9">
