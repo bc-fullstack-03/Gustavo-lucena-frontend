@@ -16,15 +16,15 @@ function PostItem({ post }: PostItemProps) {
 
     return (
         <div className="border-b border-slate-400" key={post.id}>
-            <Heading className="flex items-center ml-5 my-4">
+            <Heading className="flex items-center ml-5 mt-4 mb-2">
                 <UserCircle size={48} weight="light" />
                 <Text size="xl" className="font-extrabold text-white ml-2">{post.userEmail}</Text>
             </Heading>
             <div className="ml-20 flex flex-col gap-2">
-                <Heading size="sm">{post.content}</Heading>
-                <Text asChild>
-                    <p>{post.fileUrl}</p>
-                </Text>
+                <Heading size="sm" className="font-normal">{post.content}</Heading>
+                {post.fileUrl && 
+                    <img className="max-w-lg rounded-lg" src={post.fileUrl} alt="" />
+                }
             </div>
             <footer className="flex items-center ml-20 my-4 space-x-2">
                 <Chat

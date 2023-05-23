@@ -1,10 +1,10 @@
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import Menu from "../Menu";
 import { Post } from "../../models/Post";
 
 interface MainScreenProps {
     children: ReactNode;
-    postCreated: (post: Post) => void;
+    postCreated?: (post: Post) => void;
 }
 
 function MainScreen(props: MainScreenProps){

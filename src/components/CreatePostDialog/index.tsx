@@ -1,4 +1,6 @@
 import * as Dialog from '@radix-ui/react-dialog';
+import { useState } from 'react'
+import Dropzone from '../Dropzone';
 import Text from '../Text';
 import { TextInput } from '../TextInput';
 import { Button } from '../Button';
@@ -8,7 +10,7 @@ import { getAuthHeader } from '../../services/auth';
 import { Post } from '../../models/Post';
 
 interface CreatePostDialog {
-    postCreated: (post: Post) => void;
+    postCreated?: (post: Post) => void;
 }
 
 interface PostFormElements extends HTMLFormControlsCollection {
@@ -21,6 +23,7 @@ interface PostFormElement extends HTMLFormElement {
 }
 
 function CreatePostDialog({ postCreated }: CreatePostDialog) {
+    const [selectedFile, setSelectedFile] = useState<File>();
     const auth = getAuthHeader();
 
     async function handleSubmit(event: FormEvent<PostFormElement>) {
@@ -29,11 +32,14 @@ function CreatePostDialog({ postCreated }: CreatePostDialog) {
 
         const formData = new FormData();
         formData.append("content", form.elements.content.value)
+        if(selectedFile){
+            formData.append("postFile", selectedFile)
+        }
 
         try {
             const response = (await api.post("/post", formData, auth)).data;
             const { data } = await api.get(`/post/${response}`, auth);
-            postCreated(data);
+            postCreated && postCreated(data);
         } catch (error) {
             alert(error)
         }
@@ -50,6 +56,8 @@ function CreatePostDialog({ postCreated }: CreatePostDialog) {
                     <TextInput.Root>
                         <TextInput.Input id='content' placeholder='Qual a mensagem ?' />
                     </TextInput.Root>
+
+                    <Dropzone onFileUploaded={setSelectedFile} />
 
                     <div className='mt-4 flex justify-end gap-4'>
                         <Dialog.Close type='button' className='bg-zinc-500 px-5 h-12 rounded-md hover:bg-zinc-600'>

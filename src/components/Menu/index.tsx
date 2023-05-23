@@ -1,4 +1,5 @@
 import * as Dialog  from '@radix-ui/react-dialog';
+import { useState } from "react";
 import { House, User, UsersThree } from '@phosphor-icons/react'
 import logo_menu from '../../assets/logo_menu.svg'
 import Text from '../Text';
@@ -8,10 +9,18 @@ import CreatePostDialog from '../CreatePostDialog';
 import { Post } from '../../models/Post';
 
 interface MenuProps {
-    postCreated: (post: Post) => void;
+    postCreated?: (post: Post) => void;
 }
 
 function Menu(props: MenuProps) {
+
+    const [open, setOpen] = useState(false);
+
+    function postCreated(post: Post){
+        setOpen(false);
+        props.postCreated && props.postCreated(post);
+    }
+
 
     return (
         <div className="min-w-max basis-1/6 border-r border-slate-400 ml-2 pt-10">
@@ -43,10 +52,10 @@ function Menu(props: MenuProps) {
                 </MenuItem.Root>
             </ul>
             <footer className='flex flex-col px-5'>
-                <Dialog.Root>
+                <Dialog.Root open={open} onOpenChange={setOpen}>
                     <CreatePostButton />
 
-                    <CreatePostDialog postCreated={props.postCreated} />
+                    <CreatePostDialog postCreated={postCreated} />
                 </Dialog.Root>
             </footer>
         </div>
