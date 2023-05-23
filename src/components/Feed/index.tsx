@@ -3,13 +3,37 @@ import { Post } from "../../models/Post";
 import Heading from "../Heading";
 import Text from "../Text";
 import PostItem from "../PostItem";
+import api from "../../services/api";
+import { getAuthHeader } from "../../services/auth";
+import { useEffect, useState } from "react";
 
 interface FeedProps {
     posts: Post[]
 }
 
+interface userProps {
+    name: string;
+    email: string;
+    avatarImgUrl: string;
+}
+
 function Feed({ posts }: FeedProps) {
-    console.log(posts);
+    const auth = getAuthHeader();
+    const [user, setUser] = useState<userProps>();
+
+    useEffect(() => {
+        function getLoggedUser() {
+            try {
+                api.get("/auth/get-logged", auth).then(response => {
+                    setUser(response.data);
+                })
+            } catch(error){
+                console.log(error)
+            }
+        }
+        getLoggedUser();
+    }, [])
+
 
     return (
         <div className="basis-5/6 overflow-y-auto scroll-smooth">
@@ -19,13 +43,13 @@ function Feed({ posts }: FeedProps) {
                 </Text>
                 <div className="flex items-center ml-5 my-4">
                     <UserCircle size={48} weight="light" className="text-slate-50"></UserCircle>
-                    <Text size="lg" className="font-extrabold ml-2 text-white" >Fulano Silva</Text>
+                    <Text size="lg" className="font-extrabold ml-2 text-white" >{user && user.name}</Text>
                 </div>
             </Heading>
             <section>
                 {
                     posts &&
-                    posts.map((post: Post) => <PostItem post={post} key={post.id}/>)
+                    posts.map((post: Post) => <PostItem post={post} key={post.id} />)
                 }
             </section>
         </div>

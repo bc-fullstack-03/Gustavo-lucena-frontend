@@ -1,9 +1,17 @@
+import * as Dialog  from '@radix-ui/react-dialog';
 import { House, User, UsersThree } from '@phosphor-icons/react'
 import logo_menu from '../../assets/logo_menu.svg'
 import Text from '../Text';
 import { MenuItem } from '../MenuItem';
+import CreatePostButton from '../CreatePostButton';
+import CreatePostDialog from '../CreatePostDialog';
+import { Post } from '../../models/Post';
 
-function Menu() {
+interface MenuProps {
+    postCreated: (post: Post) => void;
+}
+
+function Menu(props: MenuProps) {
 
     return (
         <div className="min-w-max basis-1/6 border-r border-slate-400 ml-2 pt-10">
@@ -34,6 +42,13 @@ function Menu() {
                     <Text size='lg' className=' text-white font-extrabold ml-4'>Amigos</Text>
                 </MenuItem.Root>
             </ul>
+            <footer className='flex flex-col px-5'>
+                <Dialog.Root>
+                    <CreatePostButton />
+
+                    <CreatePostDialog postCreated={props.postCreated} />
+                </Dialog.Root>
+            </footer>
         </div>
     );
 }

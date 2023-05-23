@@ -16,7 +16,6 @@ function Login() {
         try {
             const { data } = await api.post("/auth/authenticate", auth)
             const decodedToken = jwtDecode(data.token) as UserToken;
-            //localStorage.setItem("profile", decodedToken.profile);
             localStorage.setItem("user", decodedToken.sub);
             localStorage.setItem("accessToken", data.token);
             navigate("/home")

@@ -3,11 +3,13 @@ import api from "../../services/api";
 import { getAuthHeader } from "../../services/auth";
 import Feed from "../../components/Feed";
 import MainScreen from "../../components/MainScreen";
+import { Post } from "../../models/Post";
 
 function Home(){
+    const user = localStorage.getItem("user") || "";
     const authHeader = getAuthHeader();
 
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState<Post[]>([]);
 
     useEffect(() => {
 
@@ -23,8 +25,16 @@ function Home(){
         getPosts();
     }, [])
 
+    function postCreated(post: Post) {
+        post = {
+            ...post,
+            userEmail: user
+        }
+        setPosts((posts) => [post, ...posts])
+    }
+
     return(
-        <MainScreen>
+        <MainScreen postCreated={postCreated}>
             <Feed posts={posts}/>
         </MainScreen>
     );

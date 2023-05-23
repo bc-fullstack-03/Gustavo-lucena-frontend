@@ -26,7 +26,6 @@ function FriendsList() {
             try {
                 const { data } = await api.get("/user", authHeader)
                 setProfiles(data)
-                console.log(data)
             } catch (error) {
                 console.log(error)
             }
