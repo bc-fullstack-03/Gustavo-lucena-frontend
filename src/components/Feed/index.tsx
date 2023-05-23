@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 
 interface FeedProps {
     posts: Post[]
+    handleLike: (postId: string) => void;
 }
 
 interface userProps {
@@ -17,7 +18,7 @@ interface userProps {
     avatarImgUrl: string;
 }
 
-function Feed({ posts }: FeedProps) {
+function Feed({ posts, handleLike }: FeedProps) {
     const auth = getAuthHeader();
     const [user, setUser] = useState<userProps>();
 
@@ -49,7 +50,7 @@ function Feed({ posts }: FeedProps) {
             <section>
                 {
                     posts &&
-                    posts.map((post: Post) => <PostItem post={post} key={post.id} />)
+                    posts.map((post: Post) => <PostItem handleLike={handleLike} post={post} key={post.id} />)
                 }
             </section>
         </div>

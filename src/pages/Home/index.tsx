@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
-import { getAuthHeader } from "../../services/auth";
+import { getAuthHeader, getUserId } from "../../services/auth";
 import Feed from "../../components/Feed";
 import MainScreen from "../../components/MainScreen";
 import { Post } from "../../models/Post";
+import { likePost } from "../../services/Posts";
+import Profile from "../../components/Profile";
 
-function Home(){
-    const user = localStorage.getItem("user") || "";
+function Home() {
+    const userId = getUserId();
     const authHeader = getAuthHeader();
 
     const [posts, setPosts] = useState<Post[]>([]);
@@ -14,10 +16,10 @@ function Home(){
     useEffect(() => {
 
         async function getPosts() {
-            try{
+            try {
                 const { data } = await api.get("/post", authHeader);
                 setPosts(data);
-            }catch(err) {
+            } catch (err) {
                 alert("Erro ao obter o Feed.");
             }
         }
@@ -26,16 +28,34 @@ function Home(){
     }, [])
 
     function postCreated(post: Post) {
-        post = {
-            ...post,
-            userEmail: user
-        }
         setPosts((posts) => [post, ...posts])
     }
 
-    return(
+    async function handleLike(postId: string) {
+        const [post, ...rest] = posts.filter((post) => post.id === postId);
+
+        try {
+            let newPost: Post;
+            if (post && !post.likes.includes(userId)) {
+                newPost = await likePost(post, userId, false)
+            }else {
+                newPost = await likePost(post, userId, true)
+            }
+
+            setPosts((posts) => {
+                const post = newPost;
+                const index = posts.indexOf(post);
+                posts[index] = newPost;
+                return [...posts];
+            })
+        } catch (error) {
+            alert(error)
+        }
+    }
+
+    return (
         <MainScreen postCreated={postCreated}>
-            <Feed posts={posts}/>
+            <Feed handleLike={handleLike} posts={posts} />
         </MainScreen>
     );
 }

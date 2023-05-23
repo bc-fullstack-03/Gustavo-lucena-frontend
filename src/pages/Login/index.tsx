@@ -1,12 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import AuthForm, { Auth } from '../../components/AuthForm';
 import api from '../../services/api';
-import jwtDecode from 'jwt-decode';
-
-interface UserToken{
-    sub: string;
-    profile: string;
-}
+import { getAuthHeader } from '../../services/auth';
 
 function Login() {
 
@@ -14,10 +9,15 @@ function Login() {
 
     async function handleLogin(auth: Auth) {
         try {
-            const { data } = await api.post("/auth/authenticate", auth)
-            const decodedToken = jwtDecode(data.token) as UserToken;
-            localStorage.setItem("user", decodedToken.sub);
-            localStorage.setItem("accessToken", data.token);
+            const { token } = (await api.post("/auth/authenticate", auth)).data;
+            localStorage.setItem("accessToken", token);
+            const { data } = await api.get("/auth/get-logged", getAuthHeader())
+            
+            localStorage.setItem("user", data.email);
+            localStorage.setItem("userId", data.id);
+            localStorage.setItem("userName", data.name);
+            localStorage.setItem("avatarImg", data.avatarImgUrl )
+            
             navigate("/home")
         } catch (error) {
             alert(error)

@@ -3,16 +3,17 @@ import { Post } from "../../models/Post";
 import Heading from "../Heading";
 import Text from "../Text";
 import { useState } from "react";
+import { getUserId } from "../../services/auth";
 
 interface PostItemProps {
     post: Post;
+    handleLike: (postId: string) => void;
 }
 
-function PostItem({ post }: PostItemProps) {
+function PostItem({ post, handleLike }: PostItemProps) {
 
     const [weight, setWeight] = useState<IconWeight>("regular");
     const [weightChat, setWeightChat] = useState<IconWeight>("regular");
-
 
     return (
         <div className="border-b border-slate-400" key={post.id}>
@@ -35,13 +36,26 @@ function PostItem({ post }: PostItemProps) {
                 />
                 <Text size="sm">{post.comments}</Text>
 
-                <Heart
-                    onMouseOver={() => { setWeight("fill") }}
-                    onMouseLeave={() => { setWeight("regular") }}
-                    weight={weight} size={24}
-                    className="text-slate-50 cursor-pointer hover:text-[#67e8f9]"
-                />
-                <Text size="sm">{post.likes}</Text>
+                {post.likes.includes(getUserId()) ? 
+                    (
+                        <Heart
+                        weight='fill' size={24}
+                        className="text-slate-50 cursor-pointer text-red-500 hover:text-[#67e8f9]"
+                        onClick={() => handleLike(post.id)}
+                    />
+                    ) :
+                    (
+                        <Heart
+                        onMouseOver={() => { setWeight("fill") }}
+                        onMouseLeave={() => { setWeight("regular") }}
+                        weight={weight} size={24}
+                        className="text-slate-50 cursor-pointer hover:text-[#67e8f9]"
+                        onClick={() => handleLike(post.id)}
+                    />
+                    )
+                }
+
+                <Text size="sm">{post.likes.length}</Text>
             </footer>
         </div>
     );
