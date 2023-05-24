@@ -5,7 +5,6 @@ import Feed from "../../components/Feed";
 import MainScreen from "../../components/MainScreen";
 import { Post } from "../../models/Post";
 import { likePost } from "../../services/Posts";
-import Profile from "../../components/Profile";
 
 function Home() {
     const userId = getUserId();
@@ -49,7 +48,7 @@ function Home() {
                 return [...posts];
             })
         } catch (error) {
-            alert(error)
+            alert("Erro ao dar like")
         }
     }
 

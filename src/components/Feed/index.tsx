@@ -28,7 +28,7 @@ function Feed({ posts, handleLike }: FeedProps) {
                 api.get("/auth/get-logged", auth).then(response => {
                     setUser(response.data);
                 })
-            } catch(error){
+            } catch (error) {
                 console.log(error)
             }
         }
@@ -50,7 +50,9 @@ function Feed({ posts, handleLike }: FeedProps) {
             <section>
                 {
                     posts &&
-                    posts.map((post: Post) => <PostItem handleLike={handleLike} post={post} key={post.id} />)
+                    posts.map((post: Post) =>
+                        <PostItem handleLike={handleLike} post={post} key={post.id} />
+                    )
                 }
             </section>
         </div>

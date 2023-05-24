@@ -40,7 +40,7 @@ function FriendsList() {
                 <Text size="xl" className="text-white">Amigos</Text>
             </Heading>
             {profiles && profiles.map((profile) => (
-                <div className="flex flex-col ml-5 w-full max-w-sm">
+                <div key={profile.id} className="flex flex-col ml-5 w-full max-w-sm">
                     <div className="flex items-center">
                         <UserCircle size={48} weight="light" className="text-slate-50" />
                         <Text size="lg" className="text-white ml-2 font-extrabold">{profile.email}</Text>

@@ -11,8 +11,11 @@ function getAuthHeader() {
 }
 
 function getUserId(): string {
-    const userId = localStorage.getItem("userId") as string;
-    return userId;
+    return localStorage.getItem("userId") as string;
 }
 
-export { getAuthHeader, getUserId }
+function getUserEmail(): string {
+    return localStorage.getItem("userEmail") as string;
+}
+
+export { getAuthHeader, getUserId, getUserEmail }
