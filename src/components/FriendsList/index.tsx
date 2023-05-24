@@ -4,15 +4,15 @@ import Heading from "../Heading";
 import Text from "../Text";
 import { Button } from "../Button";
 import api from '../../services/api';
-import { getAuthHeader } from '../../services/auth';
+import { getAuthHeader, getUserId } from '../../services/auth';
 
 interface Profile {
     id: string,
     name: string,
     email: string,
     avatarImgUrl: string,
-    followers: number,
-    following: number
+    followers: string[],
+    following: string[]
 
 }
 
@@ -34,26 +34,68 @@ function FriendsList() {
         getProfiles();
     }, [])
 
+    async function handleFollow(profileEmail: string) {
+        try {
+            await api.post(`/user/follow/${profileEmail}`, null, authHeader);
+            const response = (await api.get(`/user/${profileEmail}`, authHeader)).data;
+            setProfiles((profiles) => {
+                const newProfiles = profiles.map(profile => {
+                    if (profile.email === profileEmail) {
+                        profile.followers = response[0].followers;
+                    }
+                    return profile;
+                })
+                return [...newProfiles];
+            })
+        } catch (error) {
+            console.log("Erro ao tentar seguir perfil.")
+        }
+    }
+
+    async function handleUnFollow(profileEmail: string) {
+        try {
+            await api.post(`/user/unfollow/${profileEmail}`, null, authHeader);
+            const response = (await api.get(`/user/${profileEmail}`, authHeader)).data;
+            setProfiles((profiles) => {
+                const newProfiles = profiles.map(profile => {
+                    if (profile.email === profileEmail) {
+                        profile.followers = response[0].followers;
+                    }
+                    return profile;
+                })
+                return [...newProfiles];
+            })
+        } catch (error) {
+            console.log("Erro ao tentar seguir perfil.")
+        }
+    }
+
     return (
-        <div>
-            <Heading className="ml-5 my-4">
-                <Text size="xl" className="text-white">Amigos</Text>
+        <div className='basis-5/6 overflow-y-auto scroll-smooth'>
+            <Heading className="pb-2 mt-4 border-b border-slate-400">
+                <Text size="xl" className="text-white ml-5">Amigos</Text>
             </Heading>
-            {profiles && profiles.map((profile) => (
-                <div key={profile.id} className="flex flex-col ml-5 w-full max-w-sm">
-                    <div className="flex items-center">
-                        <UserCircle size={48} weight="light" className="text-slate-50" />
-                        <Text size="lg" className="text-white ml-2 font-extrabold">{profile.email}</Text>
-                    </div>
-                    <div className="flex items-center ml-2">
-                        <Text>{profile.followers} seguidores</Text>
-                    </div>
-                    <div className="flex items-center ml-2">
-                        <Text>Seguindo {profile.following} perfis</Text>
-                    </div>
-                    <Button className="my-2">Seguir</Button>
-                </div>
-            ))}
+            <ul>
+                {profiles && profiles.map((profile) => (
+                    <li key={profile.id} className="flex flex-col ml-5 my-5 w-full max-w-sm ">
+                        <div className="flex items-center">
+                            <UserCircle size={48} weight="light" className="text-slate-50" />
+                            <Text size="lg" className="text-white ml-2 font-extrabold">{profile.email}</Text>
+                        </div>
+                        <div className="flex items-center ml-2">
+                            <Text>{profile.followers ? profile.followers.length : 0} seguidores</Text>
+                        </div>
+                        <div className="flex items-center ml-2">
+                            <Text>Seguindo {profile.following ? profile.following.length : 0} perfis</Text>
+                        </div>
+                        {
+                            profile.followers.includes(getUserId()) ? 
+                            (<Button className="my-2 bg-cyan-900 hover:bg-cyan-700 border-2 border-cyan-700" onClick={() => handleUnFollow(profile.email)}>Deixar De Seguir</Button>) :
+                            (<Button className="my-2 bg-cyan-400" onClick={() => handleFollow(profile.email)}>Seguir</Button>) 
+                        }
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
