@@ -46,7 +46,7 @@ function PostItem({ post, handleLike }: PostItemProps) {
                     (
                         <Heart
                         weight='fill' size={24}
-                        className="text-slate-50 cursor-pointer text-red-400 hover:text-[#67e8f9]"
+                        className="text-slate-50 cursor-pointer text-red-500 hover:text-[#67e8f9]"
                         onClick={() => handleLike(post.id)}
                     />
                     ) :

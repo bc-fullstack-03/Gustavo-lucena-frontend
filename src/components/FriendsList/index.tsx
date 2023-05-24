@@ -18,14 +18,15 @@ interface Profile {
 
 function FriendsList() {
     const authHeader = getAuthHeader();
+    const userId = getUserId();
 
     const [profiles, setProfiles] = useState<Profile[]>([]);
 
     useEffect(() => {
         async function getProfiles() {
             try {
-                const { data } = await api.get("/user", authHeader)
-                setProfiles(data)
+                const response : Profile[] = await (await api.get("/user", authHeader)).data
+                setProfiles(response.filter(prof => prof.id != userId))
             } catch (error) {
                 console.log(error)
             }
@@ -79,7 +80,12 @@ function FriendsList() {
                 {profiles && profiles.map((profile) => (
                     <li key={profile.id} className="flex flex-col ml-5 my-5 w-full max-w-sm ">
                         <div className="flex items-center">
-                            <UserCircle size={48} weight="light" className="text-slate-50" />
+                            {
+                                profile.avatarImgUrl ? 
+                                <img src={profile.avatarImgUrl} className='w-[48px] h-[48px] rounded-full' /> :
+                                <UserCircle size={48} weight="light" className="text-slate-50" />
+
+                            }
                             <Text size="lg" className="text-white ml-2 font-extrabold">{profile.email}</Text>
                         </div>
                         <div className="flex items-center ml-2">
@@ -90,8 +96,8 @@ function FriendsList() {
                         </div>
                         {
                             profile.followers.includes(getUserId()) ? 
-                            (<Button className="my-2 bg-cyan-900 hover:bg-cyan-700 border-2 border-cyan-700" onClick={() => handleUnFollow(profile.email)}>Deixar De Seguir</Button>) :
-                            (<Button className="my-2 bg-cyan-400" onClick={() => handleFollow(profile.email)}>Seguir</Button>) 
+                            (<Button className="my-2 bg-cyan-700 hover:bg-cyan-500 border-2 border-cyan-500 transition" onClick={() => handleUnFollow(profile.email)}>Deixar De Seguir</Button>) :
+                            (<Button className="my-2 bg-cyan-400 transition" onClick={() => handleFollow(profile.email)}>Seguir</Button>) 
                         }
                     </li>
                 ))}

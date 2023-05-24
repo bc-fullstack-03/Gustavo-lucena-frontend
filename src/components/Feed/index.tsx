@@ -43,7 +43,11 @@ function Feed({ posts, handleLike }: FeedProps) {
                     Página Inicial
                 </Text>
                 <div className="flex items-center ml-5 my-4">
-                    <UserCircle size={48} weight="light" className="text-slate-50"></UserCircle>
+                    {
+                        user?.avatarImgUrl ? 
+                        <img src={user.avatarImgUrl} className='w-[48px] h-[48px] rounded-full' /> :
+                        <UserCircle size={48} weight="light" className="text-slate-50"></UserCircle>
+                    }
                     <Text size="lg" className="font-extrabold ml-2 text-white" >{user && user.name}</Text>
                 </div>
             </Heading>

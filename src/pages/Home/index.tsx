@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import api from "../../services/api";
 import { getAuthHeader, getUserId } from "../../services/auth";
 import Feed from "../../components/Feed";
@@ -16,7 +16,7 @@ function Home() {
 
         async function getPosts() {
             try {
-                const { data } = await api.get("/post", authHeader);
+                const { data } = await api.get("/post/followings", authHeader);
                 setPosts(data);
             } catch (err) {
                 alert("Erro ao obter o Feed.");
