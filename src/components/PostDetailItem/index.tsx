@@ -8,6 +8,7 @@ import api from '../../services/api';
 import { UserCircle } from '@phosphor-icons/react';
 import { TextInput } from '../TextInput';
 import { Button } from '../Button';
+import { useNavigate } from 'react-router-dom';
 
 interface PostDetailItemProps {
     post: Post;
@@ -31,6 +32,7 @@ interface CommentsProps {
 function PostDetailItem({ post, setPost }: PostDetailItemProps) {
     const [comments, setComments] = useState<CommentsProps[]>([])
     const userId = getUserId();
+    const navigate = useNavigate();
 
     async function handleLike() {
         try {
@@ -52,8 +54,12 @@ function PostDetailItem({ post, setPost }: PostDetailItemProps) {
             try {
                 const { data } = await api.get(`/comment/${post.id}`, getAuthHeader());
                 setComments(data);
-            } catch (error) {
-                alert("Erro ao carregar comentários")
+            } catch (error: any) {
+                if(error.response.status == 403){
+                    navigate("/");
+                }else {
+                    alert("Erro ao carregar comentários")
+                }
             }
         }
 

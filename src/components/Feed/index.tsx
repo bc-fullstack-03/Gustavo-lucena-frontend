@@ -6,6 +6,7 @@ import PostItem from "../PostItem";
 import api from "../../services/api";
 import { getAuthHeader } from "../../services/auth";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface FeedProps {
     posts: Post[]
@@ -20,6 +21,7 @@ interface userProps {
 
 function Feed({ posts, handleLike }: FeedProps) {
     const auth = getAuthHeader();
+    const navigate = useNavigate();
     const [user, setUser] = useState<userProps>();
 
     useEffect(() => {
@@ -28,8 +30,10 @@ function Feed({ posts, handleLike }: FeedProps) {
                 api.get("/auth/get-logged", auth).then(response => {
                     setUser(response.data);
                 })
-            } catch (error) {
-                console.log(error)
+            } catch (error: any) {
+                if(error.response.status == 403){
+                    navigate("/");
+                }
             }
         }
         getLoggedUser();

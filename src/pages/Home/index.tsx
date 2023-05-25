@@ -5,10 +5,12 @@ import Feed from "../../components/Feed";
 import MainScreen from "../../components/MainScreen";
 import { Post } from "../../models/Post";
 import { likePost } from "../../services/Posts";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const userId = getUserId();
     const authHeader = getAuthHeader();
+    const navigate = useNavigate();
 
     const [posts, setPosts] = useState<Post[]>([]);
 
@@ -18,8 +20,11 @@ function Home() {
             try {
                 const { data } = await api.get("/post/followings", authHeader);
                 setPosts(data);
-            } catch (err) {
-                alert("Erro ao obter o Feed.");
+            } catch (err: any) {
+                if(err.response.status == 403){
+                    navigate("/");
+                }
+                
             }
         }
 

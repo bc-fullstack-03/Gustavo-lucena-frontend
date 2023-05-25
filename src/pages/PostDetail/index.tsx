@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from '../../services/api';
 import { Post } from '../../models/Post';
 import { getAuthHeader } from '../../services/auth';
@@ -10,14 +10,17 @@ function PostDetail() {
 
     const { postId } = useParams();
     const [postDetail, setPostDetail] = useState<Post>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function getPostDetail() {
             try {
                 const { data } = await api.get(`/post/${postId}`, getAuthHeader());
                 setPostDetail(data)
-            } catch (error) {
-                console.log(error)
+            } catch (error: any) {
+                if(error.response.status == 403){
+                    navigate("/");
+                }
             }
         }
 

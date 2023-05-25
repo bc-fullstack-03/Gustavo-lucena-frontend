@@ -5,6 +5,7 @@ import Text from "../Text";
 import { Button } from "../Button";
 import api from '../../services/api';
 import { getAuthHeader, getUserId } from '../../services/auth';
+import { useNavigate } from 'react-router-dom';
 
 interface Profile {
     id: string,
@@ -19,16 +20,19 @@ interface Profile {
 function FriendsList() {
     const authHeader = getAuthHeader();
     const userId = getUserId();
+    const navigate = useNavigate();
 
     const [profiles, setProfiles] = useState<Profile[]>([]);
 
     useEffect(() => {
         async function getProfiles() {
             try {
-                const response : Profile[] = await (await api.get("/user", authHeader)).data
+                const response: Profile[] = await (await api.get("/user", authHeader)).data
                 setProfiles(response.filter(prof => prof.id != userId))
-            } catch (error) {
-                console.log(error)
+            } catch (error: any) {
+                if (error.response.status == 403) {
+                    navigate("/");
+                }
             }
         }
 
@@ -81,9 +85,9 @@ function FriendsList() {
                     <li key={profile.id} className="flex flex-col ml-5 my-5 w-full max-w-sm ">
                         <div className="flex items-center">
                             {
-                                profile.avatarImgUrl ? 
-                                <img src={profile.avatarImgUrl} className='w-[48px] h-[48px] rounded-full' /> :
-                                <UserCircle size={48} weight="light" className="text-slate-50" />
+                                profile.avatarImgUrl ?
+                                    <img src={profile.avatarImgUrl} className='w-[48px] h-[48px] rounded-full' /> :
+                                    <UserCircle size={48} weight="light" className="text-slate-50" />
 
                             }
                             <Text size="lg" className="text-white ml-2 font-extrabold">{profile.email}</Text>
@@ -95,9 +99,9 @@ function FriendsList() {
                             <Text>Seguindo {profile.following ? profile.following.length : 0} perfis</Text>
                         </div>
                         {
-                            profile.followers.includes(getUserId()) ? 
-                            (<Button className="my-2 bg-cyan-700 hover:bg-cyan-500 border-2 border-cyan-500 transition" onClick={() => handleUnFollow(profile.email)}>Deixar De Seguir</Button>) :
-                            (<Button className="my-2 bg-cyan-400 transition" onClick={() => handleFollow(profile.email)}>Seguir</Button>) 
+                            profile.followers.includes(getUserId()) ?
+                                (<Button className="my-2 bg-cyan-700 hover:bg-cyan-500 border-2 border-cyan-500 transition" onClick={() => handleUnFollow(profile.email)}>Deixar De Seguir</Button>) :
+                                (<Button className="my-2 bg-cyan-400 transition" onClick={() => handleFollow(profile.email)}>Seguir</Button>)
                         }
                     </li>
                 ))}
